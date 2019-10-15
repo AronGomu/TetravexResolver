@@ -1,7 +1,7 @@
 #include <vector>
 using namespace std;
 
-class Piece
+class Tile
 {
   public:
 	int lv;
@@ -9,15 +9,15 @@ class Piece
 	int rv;
 	int bv;
 
-	Piece()
+	Tile()
 	{
-		lv = 0;
-		tv = 0;
-		rv = 0;
-		bv = 0;
+		lv = -1;
+		tv = -1;
+		rv = -1;
+		bv = -1;
 	}
 
-	Piece(int leftValue, int topValue, int rightValue, int bottomValue)
+	Tile(int leftValue, int topValue, int rightValue, int bottomValue)
 	{
 		// Dans le sens de lecture
 		lv = leftValue;
@@ -26,7 +26,7 @@ class Piece
 		bv = bottomValue;
 	}
 
-	void printPiece()
+	void printTile()
 	{
 		cout << "Values : " << lv << "," << tv << "," << rv << "," << bv << "\n";
 		/*
@@ -41,7 +41,7 @@ class Piece
 class Board
 {
   public:
-	Piece **board;
+	Tile **board;
 	int nbRow;
 	int nbColumn;
 
@@ -50,26 +50,26 @@ class Board
 		nbRow = nbRowFromConstructor;
 		nbColumn = nbColumnFromConstructor;
 
-		board = new Piece *[nbRow];
+		board = new Tile *[nbRow];
 		for (size_t i = 0; i < nbRow; i++)
 		{
-			board[i] = new Piece[nbColumn];
+			board[i] = new Tile[nbColumn];
 		}
 
 		for (size_t i = 0; i < nbRow; i++)
 		{
 			for (size_t j = 0; j < nbColumn; j++)
 			{
-				board[i][j] = Piece();
-				board[i][j].printPiece();
+				board[i][j] = Tile();
+				board[i][j].printTile();
 			}
 		}
 	}
 
-	Board(int nbRowFromConstructor, int nbColumnFromConstructor, vector<Piece> vectorPiece)
+	Board(int nbRowFromConstructor, int nbColumnFromConstructor, vector<Tile> vectorTile)
 	{
 		/*
-		if (nbRowFromConstructor * nbColumnFromConstructor != listPiece.length())
+		if (nbRowFromConstructor * nbColumnFromConstructor != listTile.length())
 		{
 		}
 		*/
@@ -77,10 +77,10 @@ class Board
 		nbRow = nbRowFromConstructor;
 		nbColumn = nbColumnFromConstructor;
 
-		board = new Piece *[nbRow];
+		board = new Tile *[nbRow];
 		for (size_t i = 0; i < nbRow; i++)
 		{
-			board[i] = new Piece[nbColumn];
+			board[i] = new Tile[nbColumn];
 		}
 
 		int k = 0;
@@ -88,57 +88,10 @@ class Board
 		{
 			for (size_t j = 0; j < nbColumn; j++)
 			{
-				board[i][j] = vectorPiece[k];
+				board[i][j] = vectorTile[k];
 				k++;
 			}
 		}
-	}
-
-	bool pieceIsValid(int i, int j)
-	{
-		Piece pieceToValid = board[i][j];
-
-		// Validation de la leftValue
-		if (i > 0)
-		{
-			if (pieceToValid.lv != board[i][j - 1].rv)
-			{
-				cout << "C'est faux lol (LV)\n";
-				return false;
-			}
-		}
-
-		// Validation de la topValue
-		if (j > 0)
-		{
-			if (pieceToValid.tv != board[i - 1][j].bv)
-			{
-				cout << "C'est faux lol (TV)\n";
-				return false;
-			}
-		}
-
-		// Validation de la rightValue
-		if (i < nbColumn)
-		{
-			if (pieceToValid.rv != board[i][j + 1].lv)
-			{
-				cout << "C'est faux lol (RV)\n";
-				return false;
-			}
-		}
-
-		// Validation de la bottomValue
-		if (j < nbRow)
-		{
-			if (pieceToValid.bv != board[i + 1][j].tv)
-			{
-				cout << "C'est faux lol (BV)\n";
-				return false;
-			}
-		}
-
-		return true;
 	}
 
 	void printBoard()
@@ -164,5 +117,14 @@ class Board
 			cout << "|\n";
 		}
 		cout << "-------------------------\n";
+	}
+
+	bool isNull(int i, int j)
+	{
+		Tile t = board[i][j];
+		if (t.tv == -1 && t.rv == -1 && t.lv == -1 && t.bv == -1)
+			return true;
+		else
+			return false;
 	}
 };

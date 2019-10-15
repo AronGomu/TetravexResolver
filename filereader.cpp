@@ -1,8 +1,8 @@
 using namespace std;
 
-vector<Piece> readTFile(string filename, int &nbRow, int &nbColumn)
+vector<Tile> readTFile(string filename, int &nbRow, int &nbColumn)
 {
-	vector<Piece> vectorPiece;
+	vector<Tile> vectorTile;
 
 	ifstream input(filename);
 	string line;
@@ -17,12 +17,12 @@ vector<Piece> readTFile(string filename, int &nbRow, int &nbColumn)
 		}
 		else
 		{
-			vectorPiece.push_back(Piece(line[0] - '0', line[1] - '0', line[2] - '0', line[3] - '0'));
+			vectorTile.push_back(Tile(line[0] - '0', line[1] - '0', line[2] - '0', line[3] - '0'));
 		}
 		i++;
 	}
 
 	input.close();
 
-	return vectorPiece;
+	return vectorTile;
 }
