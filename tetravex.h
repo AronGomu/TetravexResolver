@@ -3,7 +3,7 @@ using namespace std;
 
 class Tile
 {
-  public:
+public:
 	int lv;
 	int tv;
 	int rv;
@@ -36,11 +36,25 @@ class Tile
 		cout << "Value of botom : " << bv << "\n";
 		*/
 	}
+
+	friend bool operator==(Tile &a, Tile &b)
+	{
+		bool result = true;
+		if (a.bv != b.bv)
+			return false;
+		if (a.tv != b.tv)
+			return false;
+		if (a.rv != b.rv)
+			return false;
+		if (a.lv != b.lv)
+			return false;
+		return result;
+	}
 };
 
 class Board
 {
-  public:
+public:
 	Tile **board;
 	int nbRow;
 	int nbColumn;
