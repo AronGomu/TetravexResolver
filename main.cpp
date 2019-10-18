@@ -7,7 +7,7 @@
 
 #include "tetravex.h"
 #include "filereader.cpp"
-#include "resolver.cpp"
+//#include "resolver.cpp"
 
 using namespace std;
 
@@ -35,10 +35,6 @@ bool isMatch(Tile tile1, Tile tile2)
 
 	else
 		return false;
-}
-
-bool isResolvable(vector<Tile> listTile)
-{
 }
 
 bool tileIsValid(Tile tileToValid, Board board, int i, int j)
@@ -94,65 +90,92 @@ bool tileIsValid(Tile tileToValid, Board board, int i, int j)
 	return true;
 }
 
-Tile findTile(Board board, vector<Tile> listTile, int i, int j)
+vector<Tile> findTile(Board board, vector<Tile> listTile, int i, int j)
 {
-	Tile tileToReturn;
-	int nbOfValidTile = 0;
+	vector<Tile> tilesToReturn;
 	for (size_t k = 0; k < listTile.size(); k++)
 	{
 		if (tileIsValid(listTile[k], board, i, j) == true)
 		{
-			tileToReturn = listTile[k];
-			nbOfValidTile++;
+			tilesToReturn.push_back(listTile[k]);
 		}
 	}
 
-	if (nbOfValidTile == 0)
-		return NULL;
-	else
-		return tileToReturn;
+	return tilesToReturn;
 }
 
-Board resolve(Board board, vector<Tile> listTile)
+bool resolve(Board &board, vector<Tile> listTile)
 {
-	int resultFindTile = 0;
-	Tile t;
+	vector<Tile> validTiles;
+
+	vector<vector<Tile>> listValidTiles;
+	vector<int[2]> listValidPosition;
+
+	Board copyBoard = board;
+	vector<Tile> copyListTile = listTile;
+	int copyPosition[2];
 
 	for (size_t i = 0; i < board.nbColumn; i++)
 	{
 		for (size_t j = 0; j < board.nbRow; j++)
 		{
-			if (board.isNull(i, j) == false)
+			if (board.isNull(i, j) == true)
 			{
-				resultFindTile = findTile(board, listTile, i, j);
-				if (resultFindTile == 0)
+				validTiles = findTile(board, listTile, i, j);
+				if (validTiles.size() == 0)
 				{
-					return board;
+					return false;
+				}
+				else
+				{
+					if (listValidTiles.empty() && listValidPosition.empty())
+					{
+						listValidTiles.push_back(validTiles);
+						listValidPosition.push_back({i, j});
+					}
+					else
+					{
+						size_t k = 0;
+						while (k < listValidTiles.size())
+						{
+							if (validTiles.size() > listValidTiles[k].size())
+							{
+								k++;
+							}
+							else
+							{
+								listValidTiles.insert(listValidTiles.begin() + k, validTiles);
+								listValidPosition.insert(listValidPosition.begin() + k, {i, j});
+							}
+						}
+					}
 				}
 			}
 		}
 	}
 
-	for (size_t i = 0; i < board.nbColumn; i++)
+	for (size_t i = 0; i < listValidTiles.size(); i++)
 	{
-		for (size_t j = 0; j < board.nbRow; j++)
+		copyPosition[0] = listValidPosition[i][0];
+		copyPosition[1] = listValidPosition[i][1];
+		for (size_t j = 0; j < listValidTiles[i].size(); j++)
 		{
-			if (board.isNull(i, j) == false)
+			copyBoard = board;
+			copyListTile = listTile;
+			copyBoard.board[copyPosition[0]][copyPosition[1]] = listValidTiles[i][j];
+			for (size_t k = 0; k < copyListTile.size(); k++)
 			{
-				resultFindTile = findTile(board, listTile, i, j);
-				if (resultFindTile == 1)
+				if (copyListTile[k] == listValidTiles[i][j])
 				{
-					board.board[i][j] = listTile return board;
+					copyListTile.erase(copyListTile.begin() + k);
+					break;
 				}
 			}
+			resolve(copyBoard, copyListTile);
 		}
 	}
 
-	else
-	{
-	}
-
-	return true;
+	return false;
 }
 
 int main()
@@ -165,7 +188,7 @@ int main()
 
 	Board b(3, 3);
 
-	cout << "Resultat test : " << allTileCanBePlayed(board, listTile) << "\n";
+	cout << "Resultat test : " << resolve(board, listTile) << "\n";
 
 	return 0;
 }
