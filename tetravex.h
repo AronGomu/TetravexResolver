@@ -26,6 +26,15 @@ public:
 		bv = bottomValue;
 	}
 
+	Tile(const Tile &t2)
+	{
+		// Dans le sens de lecture
+		lv = t2.lv;
+		tv = t2.tv;
+		rv = t2.rv;
+		bv = t2.bv;
+	}
+
 	void printTile()
 	{
 		cout << "Values : " << lv << "," << tv << "," << rv << "," << bv << "\n";
@@ -75,7 +84,6 @@ public:
 			for (size_t j = 0; j < nbColumn; j++)
 			{
 				board[i][j] = Tile();
-				board[i][j].printTile();
 			}
 		}
 	}
