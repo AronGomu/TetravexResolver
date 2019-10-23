@@ -11,6 +11,11 @@
 
 using namespace std;
 
+namespace
+{
+Board boardFinal;
+}
+
 bool isMatch(Tile tile1, Tile tile2)
 {
 	if (tile1.bv == tile2.tv)
@@ -93,21 +98,8 @@ bool tileIsValid(Tile tileToValid, Board board, int i, int j)
 
 vector<Tile> findTile(Board board, vector<Tile> listTile, int i, int j)
 {
-	/*
-	//cout << "\nLancement fonction findTile\n";
-	//cout << "Valeur de listTile.size() : " << listTile.size() << "\n";
-	//cout << "Valeur de i : " << i << "\n";
-	//cout << "Valeur de j : " << j << "\n";
-	*/
 
 	vector<Tile> tilesToReturn;
-
-	/*
-	if (tilesToReturn.size() != 0)
-	{
-		tilesToReturn.clear();
-	}
-	*/
 
 	for (size_t k = 0; k < listTile.size(); k++)
 	{
@@ -130,26 +122,10 @@ Board resolve(Board board, vector<Tile> listTile, Board prev, int DEEP)
 		return board;
 	}
 
-	////////////
+	/*
 	nbRecurrence++;
-	/*
-	if (nbRecurrence > 10)
-		return prev;
-	*/
-
 	cout << "\n\n\nRecurrence numero : " << nbRecurrence << " | DEEP level : " << DEEP << "\n";
-
-	/*
-	cout << "Liste des Tiles :\n";
-	for (size_t i = 0; i < listTile.size(); i++)
-	{
-		listTile[i].printTile();
-	}
-
-	board.printBoard();
 	*/
-
-	////////////
 
 	vector<Tile> validTiles;
 
@@ -167,63 +143,31 @@ Board resolve(Board board, vector<Tile> listTile, Board prev, int DEEP)
 	bool boardCompleted = true;
 	bool loop = false;
 
-	//cout << "Initialisation des variables terminés\n";
-
 	for (size_t i = 0; i < board.nbColumn; i++)
 	{
 		for (size_t j = 0; j < board.nbRow; j++)
 		{
-			//cout << "\nVariable i : " << i << "\n";
-			//cout << "Variable j : " << j << "\n";
-			//cout << "Variable board.nbColumn : " << board.nbColumn << "\n";
-			//cout << "Variable board.nbRow : " << board.nbRow << "\n\n";
 
 			if (board.isNull(i, j) == true)
 			{
 
 				boardCompleted = false;
 
-				////////////
-				//cout << "La case est vide\n";
-				//cout << "Variable board.board[i][j] :\n";
-				//cout << "Values : " << board.board[i][j].lv << "," << board.board[i][j].tv << "," << board.board[i][j].rv << "," << board.board[i][j].bv << "\n";
-				////////////
-
 				validTiles = findTile(board, listTile, i, j);
-
-				/////////////
-				//cout << "findtile a fini de s'éxécuter\n";
-				//cout << "Le nombre de tiles trouvés qui pourraient se slot a cet endroit : " << validTiles.size() << "\n";
-				////////////
 
 				if (validTiles.size() == 0)
 				{
-					//cout << "DUMP IT.\n";
 					return prev;
 				}
 				else
 				{
-					////////////
-					//cout << "Des tiles ont été trouvé\n";
-					//cout << "Size de listValidTiles : " << listValidTiles.size() << "\n";
-					//cout << "Size de listValidPosition : " << listValidPosition.size() << "\n";
-					////////////
 
 					if (listValidTiles.empty() && listValidPosition.empty())
 					{
-						////////////
-						//cout << "listValidTiles et listValidPosition n'a pas encoré été utilisé\n";
-						////////////
-
 						listValidTiles.push_back(validTiles);
 						tmp[0] = i;
 						tmp[1] = j;
 						listValidPosition.push_back(tmp);
-
-						////////////
-						//cout << "Size de listValidTiles : " << listValidTiles.size() << "\n";
-						//cout << "Size de listValidPosition : " << listValidPosition.size() << "\n";
-						////////////
 					}
 					else
 					{
@@ -232,15 +176,12 @@ Board resolve(Board board, vector<Tile> listTile, Board prev, int DEEP)
 						while (k < listValidTiles.size() && loop == true)
 						{
 
-							// Algo de tri par taille de validTiles
 							if (validTiles.size() > listValidTiles[k].size())
 							{
-								//cout << "Je passe dans le if\n";
 								k++;
 							}
 							else
 							{
-								//cout << "Je passe dans le else\n";
 								listValidTiles.insert(listValidTiles.begin() + k, validTiles);
 								tmp[0] = i;
 								tmp[1] = j;
@@ -261,8 +202,6 @@ Board resolve(Board board, vector<Tile> listTile, Board prev, int DEEP)
 		for (size_t j = 0; j < listValidTiles[i].size(); j++)
 		{
 			copyBoard.copyOtherBoard(ogBoard);
-			//cout << "CopyBoard :\n";
-			//copyBoard.printBoard();
 			copyListTile = listTile;
 			copyBoard.board[copyPosition[0]][copyPosition[1]] = listValidTiles[i][j];
 			for (size_t k = 0; k < copyListTile.size(); k++)
@@ -273,19 +212,7 @@ Board resolve(Board board, vector<Tile> listTile, Board prev, int DEEP)
 					break;
 				}
 			}
-			/*
-			cout << "\nNombre de Recurrence : " << nbRecurrence << " | DEEP level : " << DEEP << " | i,j : " << i << "," << j << "\n";
-			ogBoard.printBoard();
-			copyBoard.printBoard();
-			*/
 			boardToReturn.copyOtherBoard(resolve(copyBoard, copyListTile, board, DEEP + 1));
-
-			//cout << "i et j : " << i << "," << j << "\n";
-			/*
-			cout << "\nNombre de Recurrence : " << nbRecurrence << " | DEEP level : " << DEEP << " | i,j : " << i << "," << j << "\n";
-			ogBoard.printBoard();
-			boardToReturn.printBoard();
-			*/
 
 			if (boardToReturn.allIsComplete() == true)
 			{
@@ -295,6 +222,228 @@ Board resolve(Board board, vector<Tile> listTile, Board prev, int DEEP)
 	}
 
 	return prev;
+}
+
+auto calculBranch = [](Board board, vector<Tile> listTile, Board prev, int DEEP) {
+	auto calculBranch_impl = [](Board board, vector<Tile> listTile, Board prev, int DEEP, auto &calculBranch_ref) mutable {
+		if (board.allIsComplete() == true)
+		{
+			cout << "I AM FINISHED PLS PLS\n";
+			boardFinal = board;
+			return;
+		}
+
+		/*
+		nbRecurrence++;
+		cout << "\n\n\nRecurrence numero : " << nbRecurrence << " | DEEP level : " << DEEP << "\n";
+		*/
+
+		vector<Tile> validTiles;
+
+		vector<vector<Tile>> listValidTiles;
+		vector<vector<int>> listValidPosition;
+
+		Board ogBoard(board.nbRow, board.nbColumn);
+		ogBoard.copyOtherBoard(board);
+		Board copyBoard(board.nbRow, board.nbColumn);
+		Board boardToReturn(board.nbRow, board.nbColumn);
+		vector<Tile> copyListTile = listTile;
+		int copyPosition[2];
+		vector<int> tmp = {0, 0};
+
+		bool boardCompleted = true;
+		bool loop = false;
+
+		for (size_t i = 0; i < board.nbColumn; i++)
+		{
+			for (size_t j = 0; j < board.nbRow; j++)
+			{
+
+				if (board.isNull(i, j) == true)
+				{
+
+					boardCompleted = false;
+
+					validTiles = findTile(board, listTile, i, j);
+
+					if (validTiles.size() == 0)
+					{
+						return;
+					}
+					else
+					{
+
+						if (listValidTiles.empty() && listValidPosition.empty())
+						{
+							listValidTiles.push_back(validTiles);
+							tmp[0] = i;
+							tmp[1] = j;
+							listValidPosition.push_back(tmp);
+						}
+						else
+						{
+							size_t k = 0;
+							loop = true;
+							while (k < listValidTiles.size() && loop == true)
+							{
+
+								if (validTiles.size() > listValidTiles[k].size())
+								{
+									k++;
+								}
+								else
+								{
+									listValidTiles.insert(listValidTiles.begin() + k, validTiles);
+									tmp[0] = i;
+									tmp[1] = j;
+									listValidPosition.insert(listValidPosition.begin() + k, tmp);
+									loop = false;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+
+		for (size_t i = 0; i < listValidTiles.size(); i++)
+		{
+			copyPosition[0] = listValidPosition[i][0];
+			copyPosition[1] = listValidPosition[i][1];
+			for (size_t j = 0; j < listValidTiles[i].size(); j++)
+			{
+				copyBoard.copyOtherBoard(ogBoard);
+				copyListTile = listTile;
+				copyBoard.board[copyPosition[0]][copyPosition[1]] = listValidTiles[i][j];
+				for (size_t k = 0; k < copyListTile.size(); k++)
+				{
+					if (copyListTile[k] == listValidTiles[i][j])
+					{
+						copyListTile.erase(copyListTile.begin() + k);
+						break;
+					}
+				}
+				calculBranch_ref(copyBoard, copyListTile, board, DEEP + 1, calculBranch_ref);
+			}
+		}
+
+		return;
+	};
+	return calculBranch_impl(board, listTile, prev, DEEP, calculBranch_impl);
+};
+
+Board resolveThread(Board board, vector<Tile> listTile, Board prev, int DEEP)
+{
+
+	boardFinal = board;
+
+	vector<thread> vectorThread;
+
+	vector<Tile> validTiles;
+
+	vector<vector<Tile>> listValidTiles;
+	vector<vector<int>> listValidPosition;
+
+	Board ogBoard(board.nbRow, board.nbColumn);
+	ogBoard.copyOtherBoard(board);
+	Board copyBoard(board.nbRow, board.nbColumn);
+	Board boardToReturn(board.nbRow, board.nbColumn);
+	vector<Tile> copyListTile = listTile;
+	int copyPosition[2];
+	vector<int> tmp = {0, 0};
+
+	bool boardCompleted = true;
+	bool loop = false;
+
+	for (size_t i = 0; i < board.nbColumn; i++)
+	{
+		for (size_t j = 0; j < board.nbRow; j++)
+		{
+
+			if (board.isNull(i, j) == true)
+			{
+
+				boardCompleted = false;
+
+				validTiles = findTile(board, listTile, i, j);
+
+				if (validTiles.size() == 0)
+				{
+					return prev;
+				}
+				else
+				{
+
+					if (listValidTiles.empty() && listValidPosition.empty())
+					{
+						listValidTiles.push_back(validTiles);
+						tmp[0] = i;
+						tmp[1] = j;
+						listValidPosition.push_back(tmp);
+					}
+					else
+					{
+						size_t k = 0;
+						loop = true;
+						while (k < listValidTiles.size() && loop == true)
+						{
+
+							if (validTiles.size() > listValidTiles[k].size())
+							{
+								k++;
+							}
+							else
+							{
+								listValidTiles.insert(listValidTiles.begin() + k, validTiles);
+								tmp[0] = i;
+								tmp[1] = j;
+								listValidPosition.insert(listValidPosition.begin() + k, tmp);
+								loop = false;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	for (size_t i = 0; i < listValidTiles.size(); i++)
+	{
+		copyPosition[0] = listValidPosition[i][0];
+		copyPosition[1] = listValidPosition[i][1];
+		for (size_t j = 0; j < listValidTiles[i].size(); j++)
+		{
+			copyBoard.copyOtherBoard(ogBoard);
+			copyListTile = listTile;
+			copyBoard.board[copyPosition[0]][copyPosition[1]] = listValidTiles[i][j];
+			for (size_t k = 0; k < copyListTile.size(); k++)
+			{
+				if (copyListTile[k] == listValidTiles[i][j])
+				{
+					copyListTile.erase(copyListTile.begin() + k);
+					break;
+				}
+			}
+			vectorThread.push_back(thread(calculBranch, copyBoard, copyListTile, board, DEEP + 1));
+		}
+	}
+
+	//cout << "Hello there\n";
+	for (size_t i = 0; i < vectorThread.size(); i++)
+	{
+		cout << "NUMBER DE I : " << i << "\n";
+		if (boardFinal.allIsComplete() == true)
+		{
+			for (size_t i = 0; i < vectorThread.size(); i++)
+			{
+				vectorThread[i].~thread();
+			}
+			return boardFinal;
+		}
+		vectorThread[i].join();
+	}
+
+	return boardFinal;
 }
 
 //////////////////////////////////////////
@@ -311,8 +460,7 @@ int main()
 
 	Board b(3, 3);
 
-	//b.printBoard();
-	b = resolve(b, listTile, b, 0);
+	b = resolveThread(b, listTile, b, 0);
 
 	cout << "\nResultat test :\n";
 	b.printBoard();

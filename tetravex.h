@@ -1,4 +1,3 @@
-#include <vector>
 using namespace std;
 
 class Tile
@@ -67,6 +66,12 @@ public:
 	Tile **board;
 	int nbRow;
 	int nbColumn;
+
+	Board()
+	{
+		nbRow = 0;
+		nbColumn = 0;
+	}
 
 	Board(int nbRowFromConstructor, int nbColumnFromConstructor)
 	{
