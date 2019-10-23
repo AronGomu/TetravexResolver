@@ -116,6 +116,24 @@ public:
 		}
 	}
 
+	void copyOtherBoard(Board b)
+	{
+		if (nbRow != b.nbRow || nbColumn != b.nbColumn)
+		{
+			cout << "ERROR : INVALID BOARD SIZE\n";
+			return;
+		}
+
+		for (size_t i = 0; i < nbRow; i++)
+		{
+			for (size_t j = 0; j < nbColumn; j++)
+			{
+				board[i][j] = b.board[i][j];
+			}
+		}
+		return;
+	}
+
 	void printBoard()
 	{
 
@@ -148,5 +166,22 @@ public:
 			return true;
 		else
 			return false;
+	}
+
+	bool allIsComplete()
+	{
+
+		for (size_t i = 0; i < nbRow; i++)
+		{
+			for (size_t j = 0; j < nbColumn; j++)
+			{
+				if (isNull(i, j) == true)
+				{
+					return false;
+				}
+			}
+		}
+
+		return true;
 	}
 };
