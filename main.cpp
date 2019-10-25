@@ -224,6 +224,8 @@ Board resolve(Board board, vector<Tile> listTile, Board prev, int DEEP)
 	return prev;
 }
 
+/*
+
 auto calculBranch = [](Board board, vector<Tile> listTile, Board prev, int DEEP) {
 	auto calculBranch_impl = [](Board board, vector<Tile> listTile, Board prev, int DEEP, auto &calculBranch_ref) mutable {
 		if (board.allIsComplete() == true)
@@ -233,10 +235,10 @@ auto calculBranch = [](Board board, vector<Tile> listTile, Board prev, int DEEP)
 			return;
 		}
 
-		/*
-		nbRecurrence++;
-		cout << "\n\n\nRecurrence numero : " << nbRecurrence << " | DEEP level : " << DEEP << "\n";
-		*/
+		
+		//nbRecurrence++;
+		//cout << "\n\n\nRecurrence numero : " << nbRecurrence << " | DEEP level : " << DEEP << "\n";
+		
 
 		vector<Tile> validTiles;
 
@@ -446,21 +448,23 @@ Board resolveThread(Board board, vector<Tile> listTile, Board prev, int DEEP)
 	return boardFinal;
 }
 
+*/
+
 //////////////////////////////////////////
 //////////////////////////////////////////
 //////////////////////////////////////////
 
 int main()
 {
-	string filename = "test.txt";
+	string filename = "test2.txt";
 	int nbrow = 0;
 	int nbColumn = 0;
 	vector<Tile> listTile = readTFile(filename, nbrow, nbColumn);
 	Board board = Board(nbrow, nbColumn, listTile);
 
-	Board b(3, 3);
+	Board b(7, 7);
 
-	b = resolveThread(b, listTile, b, 0);
+	b = resolve(b, listTile, b, 0);
 
 	cout << "\nResultat test :\n";
 	b.printBoard();
